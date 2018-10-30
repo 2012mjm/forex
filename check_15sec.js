@@ -27,9 +27,9 @@ else sec = '46';
 
 console.log('date', d);
 
-connection.query("SELECT * FROM `quotes` WHERE `symbol` LIKE 'EURUSD' order by id desc limit 100", function (error, results, fields) {
+connection.query("SELECT * FROM `quotes` WHERE `symbol` LIKE 'EURUSD' AND `date` LIKE '2018-10-% "+hour+":"+min+":"+sec+"'", function (error, results, fields) {
 	if (error) console.log(error);
-	results = results.reverse();
+	//results = results.reverse();
 	period = results.length;
 	console.log('period', period);
 
@@ -43,7 +43,7 @@ connection.query("SELECT * FROM `quotes` WHERE `symbol` LIKE 'EURUSD' order by i
 
 	//console.log(results[0], values);
 	
-	console.log('SMA', ta.SMA.calculate({period: 14, values: values.close}).slice(-1)[0]);
+	console.log('SMA', ta.SMA.calculate({14, values: values.close}));
 
 	console.log('MACD', ta.MACD.calculate({values: values.close, 
         	fastPeriod        : 5,
@@ -51,11 +51,11 @@ connection.query("SELECT * FROM `quotes` WHERE `symbol` LIKE 'EURUSD' order by i
 	        signalPeriod      : 3,
 	        SimpleMAOscillator: false,
 	        SimpleMASignal    : false
-	}).slice(-1)[0]);
+	}));
 
-	console.log('RSI', ta.RSI.calculate({period: 14, values: values.close}).slice(-1)[0]);
+	console.log('RSI', ta.RSI.calculate({period: 14, values: values.close}));
 
-	console.log('CCI', ta.CCI.calculate({...values, period: 14}).slice(-1)[0]);
+	console.log('CCI', ta.CCI.calculate({...values, 14}));
 });
 
 let message = 'hi';
