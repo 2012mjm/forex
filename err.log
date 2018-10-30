@@ -1,0 +1,3 @@
+Error: FetchError: invalid json response body at https://forex.1forge.com/1.0.3/quotes?cache=false&pairs=EURUSD,GBPUSD,EURCHF,EURGBP,EURNZD,AUDJPY,GBPAUD,GBPCAD,GBPNZD,NZDUSD,EURJPY,USDJPY,USDCHF,GBPJPY&api_key=wSGMlAeBZ2FAbUzC8bVcASdCfODxZGtQ reason: Unexpected token < in JSON at position 0
+    at /home/mjm3d/forex/node_modules/forex-quotes/lib/ForexDataClient.js:142:23
+    at process._tickCallback (internal/process/next_tick.js:109:7)
