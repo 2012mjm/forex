@@ -47,8 +47,8 @@ setInterval(() => {
       let rsi15sec = ta.RSI.calculate({ period: 14, values: sec15.close });
       let rsi1min = ta.RSI.calculate({ period: 14, values: min1.close });
 
-      let rsi15sec = ta.CCI.calculate({ ...sec15, period: 14 });
-      let rsi1min = ta.CCI.calculate({ ...min1, period: 14 });
+      let cci15sec = ta.CCI.calculate({ ...sec15, period: 14 });
+      let cci1min = ta.CCI.calculate({ ...min1, period: 14 });
 
       console.log("SMA 15 sec", sma15sec.slice(-1)[0]);
       console.log("SMA 1 min", sma1min.slice(-1)[0]);
