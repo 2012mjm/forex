@@ -24,9 +24,9 @@ setInterval(() => {
       const min1 = oneMinute(results);
       const min5 = fiveMinutes(results);
 
-      let sma15sec = ta.SMA.calculate({ period: 14, values: sec15.close });
-      let sma1min = ta.SMA.calculate({ period: 14, values: min1.close });
-      let sma5min = ta.SMA.calculate({ period: 14, values: min5.close });
+      // let sma15sec = ta.SMA.calculate({ period: 14, values: sec15.close });
+      // let sma1min = ta.SMA.calculate({ period: 14, values: min1.close });
+      // let sma5min = ta.SMA.calculate({ period: 14, values: min5.close });
 
       let macd15sec = ta.MACD.calculate({
         values: sec15.close,
@@ -59,13 +59,13 @@ setInterval(() => {
       let rsi1min = ta.RSI.calculate({ period: 14, values: min1.close });
       let rsi5min = ta.RSI.calculate({ period: 14, values: min5.close });
 
-      let cci15sec = ta.CCI.calculate({ ...sec15, period: 14 });
-      let cci1min = ta.CCI.calculate({ ...min1, period: 14 });
-      let cci5min = ta.CCI.calculate({ ...min5, period: 14 });
+      let cci15sec = ta.CCI.calculate({ ...sec15, period: 20 });
+      let cci1min = ta.CCI.calculate({ ...min1, period: 20 });
+      let cci5min = ta.CCI.calculate({ ...min5, period: 20 });
 
-      console.log("SMA 15 sec:", sma15sec.slice(-1)[0]);
-      console.log("SMA 1 min:", sma1min.slice(-1)[0]);
-      console.log("SMA 5 min:", sma5min.slice(-1)[0]);
+      // console.log("SMA 15 sec:", sma15sec.slice(-1)[0]);
+      // console.log("SMA 1 min:", sma1min.slice(-1)[0]);
+      // console.log("SMA 5 min:", sma5min.slice(-1)[0]);
 
       console.log("MACD 15 sec:", macd15sec.slice(-1)[0]);
       console.log("MACD 1 min:", macd1min.slice(-1)[0]);
