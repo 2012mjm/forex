@@ -16,7 +16,7 @@ const chatIds = ["114463063"];
 
 setInterval(() => {
   connection.query(
-    "SELECT * FROM `quotes` WHERE `symbol` LIKE 'EURUSD' order by id desc limit 100",
+    "SELECT * FROM `quotes` WHERE `symbol` LIKE 'EURUSD' order by id desc limit 1000",
     function(error, results, fields) {
       results = results.reverse();
 
