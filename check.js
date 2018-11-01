@@ -59,17 +59,17 @@ setInterval(() => {
       let rsi1min = ta.RSI.calculate({ period: 14, values: min1.close });
       let rsi5min = ta.RSI.calculate({ period: 14, values: min5.close });
 
-      let bb15sec = ta.BB.calculate({
+      let bb15sec = ta.BollingerBands.calculate({
         period: 20,
         stdDev: 2,
         values: sec15.close
       });
-      let bb1min = ta.BB.calculate({
+      let bb1min = ta.BollingerBands.calculate({
         period: 20,
         stdDev: 2,
         values: min1.close
       });
-      let bb5min = ta.BB.calculate({
+      let bb5min = ta.BollingerBands.calculate({
         period: 20,
         stdDev: 2,
         values: min5.close
