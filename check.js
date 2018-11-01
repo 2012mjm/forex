@@ -63,6 +63,10 @@ setInterval(() => {
       let bb1min = bollingerBands(min1.close);
       let bb5min = bollingerBands(min5.close);
 
+      let psar15sec = parabolicSAR(sec15.low, sec15.high);
+      let psar1min = parabolicSAR(min1.low, min1.high);
+      let psar5min = parabolicSAR(min5.low, min5.high);
+
       // let cci15sec = ta.CCI.calculate({ ...sec15, period: 20 });
       // let cci1min = ta.CCI.calculate({ ...min1, period: 20 });
       // let cci5min = ta.CCI.calculate({ ...min5, period: 20 });
@@ -82,6 +86,10 @@ setInterval(() => {
       console.log("BB 15 sec:", bb15sec, sec15.close.slice(-1)[0]);
       console.log("BB 1 min:", bb1min, min1.close.slice(-1)[0]);
       console.log("BB 5 min:", bb5min, min5.close.slice(-1)[0]);
+
+      console.log("PSAR 15 sec:", psar15sec, sec15.close.slice(-1)[0]);
+      console.log("PSAR 1 min:", psar1min, min1.close.slice(-1)[0]);
+      console.log("PSAR 5 min:", psar5min, min5.close.slice(-1)[0]);
 
       console.log("\n\n");
 
@@ -211,5 +219,18 @@ const bollingerBands = values => {
   } else {
     result.status = null;
   }
+  return result;
+};
+
+const parabolicSAR = (low, high) => {
+  let result = ta.PSAR
+    .calculate({
+      step: 0.02,
+      max: 0.2,
+      high,
+      low
+    })
+    .slice(-1)[0];
+
   return result;
 };
