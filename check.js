@@ -91,9 +91,9 @@ setInterval(() => {
       console.log("RSI 1 min:", rsi1min.slice(-1)[0]);
       console.log("RSI 5 min:", rsi5min.slice(-1)[0]);
 
-      console.log("BB 15 sec:", bb15sec.slice(-1)[0]);
-      console.log("BB 1 min:", bb1min.slice(-1)[0]);
-      console.log("BB 5 min:", bb5min.slice(-1)[0]);
+      console.log("BB 15 sec:", bb15sec.slice(-1)[0], sec15.close.slice(-1)[0]);
+      console.log("BB 1 min:", bb1min.slice(-1)[0], min1.close.slice(-1)[0]);
+      console.log("BB 5 min:", bb5min.slice(-1)[0], min5.close.slice(-1)[0]);
 
       console.log("\n\n");
 
