@@ -59,6 +59,22 @@ setInterval(() => {
       let rsi1min = ta.RSI.calculate({ period: 14, values: min1.close });
       let rsi5min = ta.RSI.calculate({ period: 14, values: min5.close });
 
+      let bb15sec = ta.BB.calculate({
+        period: 20,
+        stdDev: 2,
+        values: sec15.close
+      });
+      let bb1min = ta.BB.calculate({
+        period: 20,
+        stdDev: 2,
+        values: min1.close
+      });
+      let bb5min = ta.BB.calculate({
+        period: 20,
+        stdDev: 2,
+        values: min5.close
+      });
+
       // let cci15sec = ta.CCI.calculate({ ...sec15, period: 20 });
       // let cci1min = ta.CCI.calculate({ ...min1, period: 20 });
       // let cci5min = ta.CCI.calculate({ ...min5, period: 20 });
@@ -74,6 +90,12 @@ setInterval(() => {
       console.log("RSI 15 sec:", rsi15sec.slice(-1)[0]);
       console.log("RSI 1 min:", rsi1min.slice(-1)[0]);
       console.log("RSI 5 min:", rsi5min.slice(-1)[0]);
+
+      console.log("BB 15 sec:", bb15sec.slice(-1)[0]);
+      console.log("BB 1 min:", bb1min.slice(-1)[0]);
+      console.log("BB 5 min:", bb5min.slice(-1)[0]);
+
+      console.log("\n\n");
 
       if (
         (rsi15sec.slice(-1)[0] < 30 &&
