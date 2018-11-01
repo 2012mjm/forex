@@ -59,21 +59,9 @@ setInterval(() => {
       let rsi1min = ta.RSI.calculate({ period: 14, values: min1.close });
       let rsi5min = ta.RSI.calculate({ period: 14, values: min5.close });
 
-      let bb15sec = ta.BollingerBands.calculate({
-        period: 20,
-        stdDev: 2,
-        values: sec15.close
-      });
-      let bb1min = ta.BollingerBands.calculate({
-        period: 20,
-        stdDev: 2,
-        values: min1.close
-      });
-      let bb5min = ta.BollingerBands.calculate({
-        period: 20,
-        stdDev: 2,
-        values: min5.close
-      });
+      let bb15sec = bollingerBands(sec15.close);
+      let bb1min = bollingerBands(min1.close);
+      let bb5min = bollingerBands(min5.close);
 
       // let cci15sec = ta.CCI.calculate({ ...sec15, period: 20 });
       // let cci1min = ta.CCI.calculate({ ...min1, period: 20 });
@@ -91,9 +79,9 @@ setInterval(() => {
       console.log("RSI 1 min:", rsi1min.slice(-1)[0]);
       console.log("RSI 5 min:", rsi5min.slice(-1)[0]);
 
-      console.log("BB 15 sec:", bb15sec.slice(-1)[0], sec15.close.slice(-1)[0]);
-      console.log("BB 1 min:", bb1min.slice(-1)[0], min1.close.slice(-1)[0]);
-      console.log("BB 5 min:", bb5min.slice(-1)[0], min5.close.slice(-1)[0]);
+      console.log("BB 15 sec:", bb15sec, sec15.close.slice(-1)[0]);
+      console.log("BB 1 min:", bb1min, min1.close.slice(-1)[0]);
+      console.log("BB 5 min:", bb5min, min5.close.slice(-1)[0]);
 
       console.log("\n\n");
 
@@ -190,4 +178,29 @@ const fiveMinutes = results => {
     i++;
   });
   return values;
+};
+
+const bollingerBands = values => {
+  let result = ta.BollingerBands
+    .calculate({
+      period: 20,
+      stdDev: 2,
+      values
+    })
+    .slice(-1)[0];
+
+  const newClose = values.slice(-1)[0];
+
+  if (newClose >= result.upper) {
+    result.status = "upper";
+  } else if (newClose <= result.lower) {
+    result.status = "lower";
+  } else if (newClose > result.middle) {
+    result.status = "top_middle";
+  } else if (newClose < result.middle) {
+    result.status = "down_middle";
+  } else {
+    result.status = null;
+  }
+  return result;
 };
