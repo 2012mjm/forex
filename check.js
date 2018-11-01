@@ -93,7 +93,16 @@ setInterval(() => {
           rsi1min.slice(-1)[0] > 70 &&
           rsi5min.slice(-1)[0] > 70)
       ) {
-        let message = `RSI 15 sec: ${rsi15sec.slice(-1)[0]}\nRSI 1 min: ${rsi1min.slice(-1)[0]}\nRSI 5 min: ${rsi5min.slice(-1)[0]}`;
+        let message = `تایم فریم ۱۵ ثانیه‌ای\n`;
+        message += `آر اس آی: ${rsi15sec.slice(-1)[0]}\n`;
+        message += `باند بولینگر: ${bb15sec.status}\n\n`;
+        message += `تایم فریم یک دقیقه‌ای\n`;
+        message += `آر اس آی: ${rsi1min.slice(-1)[0]}\n`;
+        message += `باند بولینگر: ${bb1min.status}\n\n`;
+        message += `تایم فریم پنج دقیقه‌ای\n`;
+        message += `آر اس آی: ${rsi5min.slice(-1)[0]}\n`;
+        message += `باند بولینگر: ${bb5min.status}`;
+
         chatIds.forEach(chatId => {
           request(
             "https://api.telegram.org/bot745759458:AAHtUX6YTX7yxmOIdD_HtSDq7z7IPhL2sh4/sendMessage?chat_id=" +
