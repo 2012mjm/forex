@@ -103,13 +103,16 @@ setInterval(() => {
       ) {
         let message = `تایم فریم ۱۵ ثانیه‌ای\n`;
         message += `آر اس آی: ${rsi15sec.slice(-1)[0]}\n`;
-        message += `باند بولینگر: ${bb15sec.status}\n\n`;
+        message += `باند بولینگر: ${bb15sec.status}\n`;
+        message += `پارابولیک: ${psar15sec.status}\n\n`;
         message += `تایم فریم یک دقیقه‌ای\n`;
         message += `آر اس آی: ${rsi1min.slice(-1)[0]}\n`;
-        message += `باند بولینگر: ${bb1min.status}\n\n`;
+        message += `باند بولینگر: ${bb1min.status}\n`;
+        message += `پارابولیک: ${psar1min.status}\n\n`;
         message += `تایم فریم پنج دقیقه‌ای\n`;
         message += `آر اس آی: ${rsi5min.slice(-1)[0]}\n`;
-        message += `باند بولینگر: ${bb5min.status}`;
+        message += `باند بولینگر: ${bb5min.status}\n`;
+        message += `پارابولیک: ${psar5min.status}\n`;
 
         chatIds.forEach(chatId => {
           request(
@@ -213,9 +216,9 @@ const bollingerBands = values => {
   } else if (newClose <= result.lower) {
     result.status = "lower";
   } else if (newClose > result.middle) {
-    result.status = "top_middle";
+    result.status = "top middle";
   } else if (newClose < result.middle) {
-    result.status = "down_middle";
+    result.status = "down middle";
   } else {
     result.status = null;
   }
@@ -232,5 +235,15 @@ const parabolicSAR = (low, high) => {
     })
     .slice(-1)[0];
 
+  const newLow = low.slice(-1)[0];
+  const newHigh = high.slice(-1)[0];
+
+  if (newLow > result || newHigh > result) {
+    result = { value: result, status: "down" };
+  } else if (newLow < result || newHigh < result) {
+    result = { value: result, status: "top" };
+  } else {
+    result = { value: result, status: null };
+  }
   return result;
 };
