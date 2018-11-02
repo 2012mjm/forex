@@ -6,6 +6,7 @@
   "dependencies": {
     "forex-quotes": "^2.0.10",
     "mysql": "^2.16.0",
+    "node-telegram-bot-api": "^0.30.0",
     "request": "^2.88.0",
     "technicalindicators": "^2.0.5"
   },

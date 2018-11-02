@@ -1,5 +1,6 @@
 const ta = require("technicalindicators");
 const request = require("request");
+const tgBot = require("node-telegram-bot-api");
 
 const mysql = require("mysql");
 const connection = mysql.createConnection({
@@ -10,6 +11,8 @@ const connection = mysql.createConnection({
   //port: '3388'
 });
 connection.connect();
+
+const tg = new tgBot("745759458:AAHtUX6YTX7yxmOIdD_HtSDq7z7IPhL2sh4", {polling: true});
 
 let period = 8;
 const chatIds = ["114463063"];
@@ -115,12 +118,7 @@ setInterval(() => {
         message += `پارابولیک: ${psar5min.status}\n`;
 
         chatIds.forEach(chatId => {
-          request(
-            "https://api.telegram.org/bot745759458:AAHtUX6YTX7yxmOIdD_HtSDq7z7IPhL2sh4/sendMessage?chat_id=" +
-              chatId +
-              "&text=" +
-              message
-          );
+	  tg.sendMessage(chatId, message)
         });
       }
 
