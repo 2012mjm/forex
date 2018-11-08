@@ -162,8 +162,8 @@ const fifteenSeconds = results => {
   QUOTE.forEach(item => {
     values.open[item] = [];
     values.close[item] = [];
-    values.max[item] = [];
-    values.min[item] = [];
+    values.high[item] = [];
+    values.low[item] = [];
   });
   results.forEach(result => {
     values.open[result.symbol].push(result.open);
