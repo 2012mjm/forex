@@ -15,7 +15,7 @@ connection.connect();
 const tg = new tgBot("745759458:AAHtUX6YTX7yxmOIdD_HtSDq7z7IPhL2sh4", {polling: true});
 
 let period = 8;
-const chatIds = ["114463063"];
+const chatIds = ["114463063","614887041"];
 
 setInterval(() => {
   connection.query(
