@@ -27,8 +27,6 @@ setInterval(() => {
       results = results.reverse();
       const sec15 = filter(results);
 
-      console.log("type", sec15.type);
-
       connection.query(
         "SELECT COALESCE(`id`) id, symbol, COALESCE(`date`) `date`, \
         MIN(`min`) as `min`, MAX(`max`) as `max`, COALESCE(`open`) as `open`, SUBSTRING_INDEX(GROUP_CONCAT(`close`), ',', -1) as `close` \
@@ -40,24 +38,96 @@ setInterval(() => {
           const min1 = filter(results);
 
           config.quote_symbols.forEach(item => {
-            if (countIf(sec15.type[item], "buy") >= 15) {
-              console.log(`${item} -> best buy`);
-            } else if (countIf(sec15.type[item], "sell") >= 15) {
-              console.log(`${item} -> best sell`);
-            }
+            // if (countIf(sec15.type[item], "buy") >= 15) {
+            //   console.log(`${item} -> best buy`);
+            // } else if (countIf(sec15.type[item], "sell") >= 15) {
+            //   console.log(`${item} -> best sell`);
+            // }
+
+            const val1 = {
+              open: sec15.open[item].slice(-1),
+              high: sec15.high[item].slice(-1),
+              close: sec15.close[item].slice(-1),
+              low: sec15.low[item].slice(-1)
+            };
+            const val2 = {
+              open: sec15.open[item].slice(-2),
+              high: sec15.high[item].slice(-2),
+              close: sec15.close[item].slice(-2),
+              low: sec15.low[item].slice(-2)
+            };
+            const val3 = {
+              open: sec15.open[item].slice(-3),
+              high: sec15.high[item].slice(-3),
+              close: sec15.close[item].slice(-3),
+              low: sec15.low[item].slice(-3)
+            };
+
+            console.log(item, "Is Abandoned Baby ?", ta.abandonedbaby(val2));
 
             console.log(
               item,
-              "Is Abandoned Baby",
-              ta.abandonedbaby({
-                open: sec15.open[item].slice(-3),
-                high: sec15.high[item].slice(-3),
-                close: sec15.close[item].slice(-3),
-                low: sec15.low[item].slice(-3)
-              })
+              "Is Bearish Engulfing Pattern ?",
+              ta.bearishengulfingpattern(val2)
             );
 
-            console.log("\n\n");
+            console.log(
+              item,
+              "Is Bullish Engulfing Pattern ?",
+              ta.bullishengulfingpattern(val2)
+            );
+
+            console.log(
+              item,
+              "Is DarkCloudCover Pattern ?",
+              ta.darkcloudcover(val2)
+            );
+
+            console.log(
+              item,
+              "Is DownsideTasukiGap Pattern ?",
+              ta.downsidetasukigap(val3)
+            );
+
+            console.log(item, "Is Doji Pattern ?", ta.doji(val1));
+
+            console.log(
+              item,
+              "Is Dragon Doji Pattern ?",
+              ta.dragonflydoji(val1)
+            );
+
+            console.log(
+              item,
+              "Is Gravestone Doji Pattern ?",
+              ta.gravestonedoji(val1)
+            );
+
+            console.log(
+              item,
+              "Is Bullish Harami Pattern ?",
+              ta.bullishharami(val2)
+            );
+
+            console.log(
+              item,
+              "Is Bearish HaramiCross Pattern ?",
+              ta.bearishharamicross(val2)
+            );
+
+            console.log(
+              item,
+              "Is Bullish HaramiCross Pattern ?",
+              ta.bullishharamicross(val2)
+            );
+
+            console.log(
+              item,
+              "Is Bullish HaramiCross Pattern ?",
+              ta.bullishharamicross(val2)
+            );
+
+            console.log("\n");
 
             // let rsi15sec = ta.RSI.calculate({
             //   period: 14,
@@ -72,6 +142,8 @@ setInterval(() => {
           });
         }
       );
+
+      console.log("\n\n");
     }
   );
 }, 15000);
