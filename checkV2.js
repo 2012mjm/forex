@@ -44,89 +44,7 @@ setInterval(() => {
             //   console.log(`${item} -> best sell`);
             // }
 
-            const val1 = {
-              open: sec15.open[item].slice(-1),
-              high: sec15.high[item].slice(-1),
-              close: sec15.close[item].slice(-1),
-              low: sec15.low[item].slice(-1)
-            };
-            const val2 = {
-              open: sec15.open[item].slice(-2),
-              high: sec15.high[item].slice(-2),
-              close: sec15.close[item].slice(-2),
-              low: sec15.low[item].slice(-2)
-            };
-            const val3 = {
-              open: sec15.open[item].slice(-3),
-              high: sec15.high[item].slice(-3),
-              close: sec15.close[item].slice(-3),
-              low: sec15.low[item].slice(-3)
-            };
-
-            console.log(item, "Is Abandoned Baby ?", ta.abandonedbaby(val2));
-
-            console.log(
-              item,
-              "Is Bearish Engulfing Pattern ?",
-              ta.bearishengulfingpattern(val2)
-            );
-
-            console.log(
-              item,
-              "Is Bullish Engulfing Pattern ?",
-              ta.bullishengulfingpattern(val2)
-            );
-
-            console.log(
-              item,
-              "Is DarkCloudCover Pattern ?",
-              ta.darkcloudcover(val2)
-            );
-
-            console.log(
-              item,
-              "Is DownsideTasukiGap Pattern ?",
-              ta.downsidetasukigap(val3)
-            );
-
-            console.log(item, "Is Doji Pattern ?", ta.doji(val1));
-
-            console.log(
-              item,
-              "Is Dragon Doji Pattern ?",
-              ta.dragonflydoji(val1)
-            );
-
-            console.log(
-              item,
-              "Is Gravestone Doji Pattern ?",
-              ta.gravestonedoji(val1)
-            );
-
-            console.log(
-              item,
-              "Is Bullish Harami Pattern ?",
-              ta.bullishharami(val2)
-            );
-
-            console.log(
-              item,
-              "Is Bearish HaramiCross Pattern ?",
-              ta.bearishharamicross(val2)
-            );
-
-            console.log(
-              item,
-              "Is Bullish HaramiCross Pattern ?",
-              ta.bullishharamicross(val2)
-            );
-
-            console.log(
-              item,
-              "Is Bullish HaramiCross Pattern ?",
-              ta.bullishharamicross(val2)
-            );
-
+            console.log(item, candleStickPattern(min1, item))
             console.log("\n");
 
             // let rsi15sec = ta.RSI.calculate({
@@ -219,4 +137,80 @@ const parabolicSAR = (low, high) => {
 
 const countIf = (array, value) => {
   return array.filter(x => x == value).length;
+};
+
+const candleStickPattern = (values, symbol) => {
+  let result = [];
+  const val1 = {
+    open: values.open[symbol].slice(-1),
+    high: values.high[symbol].slice(-1),
+    close: values.close[symbol].slice(-1),
+    low: values.low[symbol].slice(-1)
+  };
+  const val2 = {
+    open: values.open[symbol].slice(-2),
+    high: values.high[symbol].slice(-2),
+    close: values.close[symbol].slice(-2),
+    low: values.low[symbol].slice(-2)
+  };
+  const val3 = {
+    open: values.open[symbol].slice(-3),
+    high: values.high[symbol].slice(-3),
+    close: values.close[symbol].slice(-3),
+    low: values.low[symbol].slice(-3)
+  };
+
+  if (ta.abandonedbaby(val3)) {
+    result.push("Abandoned Baby");
+  }
+  if (ta.bearishengulfingpattern(val2)) {
+    result.push("Bearish Engulfing");
+  }
+  if (ta.bullishengulfingpattern(val2)) {
+    result.push("Bullish Engulfing");
+  }
+  if (ta.darkcloudcover(val2)) {
+    result.push("Dark Cloud Cover");
+  }
+  if (ta.downsidetasukigap(val2)) {
+    result.push("Downside Tasuki Gap");
+  }
+  if (ta.doji(val1)) {
+    result.push("Doji");
+  }
+  if (ta.dragonflydoji(val1)) {
+    result.push("Dragon Fly Doji");
+  }
+  if (ta.gravestonedoji(val1)) {
+    result.push("Gravestone Doji");
+  }
+  if (ta.bullishharami(val2)) {
+    result.push("Bullish Harami");
+  }
+  if (ta.bearishharami(val2)) {
+    result.push("Bearish Harami");
+  }
+  if (ta.bearishharamicross(val2)) {
+    result.push("Bearish Harami Cross");
+  }
+  if (ta.bullishharamicross(val2)) {
+    result.push("Bullish Harami Cross");
+  }
+  if (ta.bullishmarubozu(val1)) {
+    result.push("Bullish Marubozu");
+  }
+  if (ta.bearishmarubozu(val1)) {
+    result.push("Bearish Marubozu");
+  }
+  if (ta.eveningdojistar(val3)) {
+    result.push("Evening Doji Star");
+  }
+  if (ta.eveningstar(val3)) {
+    result.push("Evening Star");
+  }
+  if (ta.piercingline(val2)) {
+    result.push("Piercing Line");
+  }
+
+  return result;
 };
