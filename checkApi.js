@@ -22,6 +22,7 @@ app.get("/candlestick/:date", (req, res) => {
     (error, results, fields) => {
       results = results.reverse();
       const sec15 = filter(results);
+      console.log(sec15)
 
       res.json(candleStickPattern(sec15, "EURUSD"));
     }
