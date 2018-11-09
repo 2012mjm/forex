@@ -235,9 +235,12 @@ const candleStickPattern = (values, symbol) => {
   if (ta.threewhitesoldiers(val3)) {
     result.push("Three White Soldiers");
   }
-  if (ta.bearishhammer(val1)) {
-    result.push("Bearish Hammer");
-  }
+  // if (ta.bullishhammer(val1)) {
+  //   result.push("Bullish Hammer");
+  // }
+  // if (ta.bearishhammer(val1)) {
+  //   result.push("Bearish Hammer");
+  // }
   if (ta.bullishinvertedhammer(val1)) {
     result.push("Bullish Inverted Hammer");
   }
