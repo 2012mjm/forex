@@ -40,19 +40,36 @@ setInterval(() => {
           const min1 = filter(results);
 
           config.quote_symbols.forEach(item => {
-            let rsi15sec = ta.RSI.calculate({
-              period: 14,
-              values: sec15.close[item]
-            });
-            let rsi1min = ta.RSI.calculate({
-              period: 14,
-              values: min1.close[item]
-            });
-            console.log(`${item} -> RSI 15 sec:`, rsi15sec.slice(-1)[0]);
-            console.log(`${item} -> RSI 1 min:`, rsi1min.slice(-1)[0]);
-          });
+            if (countIf(sec15.type[item], "buy") >= 15) {
+              console.log(`${item} -> best buy`);
+            } else if (countIf(sec15.type[item], "sell") >= 15) {
+              console.log(`${item} -> best sell`);
+            }
 
-          console.log("\n\n");
+            console.log(
+              item,
+              "Is Abandoned Baby",
+              ta.abandonedbaby.calculate({
+                open: sec15.open[item].slice(-3),
+                high: sec15.high[item].slice(-3),
+                close: sec15.close[item].slice(-3),
+                low: sec15.low[item].slice(-3)
+              })
+            );
+
+            console.log("\n\n");
+
+            // let rsi15sec = ta.RSI.calculate({
+            //   period: 14,
+            //   values: sec15.close[item]
+            // });
+            // let rsi1min = ta.RSI.calculate({
+            //   period: 14,
+            //   values: min1.close[item]
+            // });
+            // console.log(`${item} -> RSI 15 sec:`, rsi15sec.slice(-1)[0]);
+            // console.log(`${item} -> RSI 1 min:`, rsi1min.slice(-1)[0]);
+          });
         }
       );
     }
@@ -126,4 +143,8 @@ const parabolicSAR = (low, high) => {
     result = { value: result, status: null };
   }
   return result;
+};
+
+const countIf = (array, value) => {
+  return array.filter(x => x == value).length;
 };
