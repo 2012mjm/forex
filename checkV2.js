@@ -241,12 +241,12 @@ const candleStickPattern = (values, symbol) => {
   // if (ta.bearishhammer(val1)) {
   //   result.push("Bearish Hammer");
   // }
-  if (ta.bullishinvertedhammer(val1)) {
-    result.push("Bullish Inverted Hammer");
-  }
-  if (ta.bearishinvertedhammer(val1)) {
-    result.push("Bearish Inverted Hammer");
-  }
+  // if (ta.bullishinvertedhammer(val1)) {
+  //   result.push("Bullish Inverted Hammer");
+  // }
+  // if (ta.bearishinvertedhammer(val1)) {
+  //   result.push("Bearish Inverted Hammer");
+  // }
   if (ta.hammerpattern(val5)) {
     result.push("Hammer");
   }
