@@ -16,21 +16,17 @@ const connection = mysql.createConnection({
 });
 connection.connect();
 
-app.get(
-  "/candlestick/:date",
-  (req, res) => {
-    connection.query(
-      `SELECT * FROM quotes WHERE symbol = 'EURUSD' AND date <= ${req.params.date} ORDER BY id DESC LIMIT 10`,
-      (error, results, fields) => {
-        results = results.reverse();
-        const sec15 = filter(results);
+app.get("/candlestick/:date", (req, res) => {
+  connection.query(
+    `SELECT * FROM quotes WHERE symbol = 'EURUSD' AND date <= ${req.params.date} ORDER BY id DESC LIMIT 10`,
+    (error, results, fields) => {
+      results = results.reverse();
+      const sec15 = filter(results);
 
-        res.json(candleStickPattern(sec15, "EURUSD"));
-      }
-    );
-  },
-  15000
-);
+      res.json(candleStickPattern(sec15, "EURUSD"));
+    }
+  );
+});
 
 const filter = results => {
   let values = { open: [], close: [], high: [], low: [], type: [] };
