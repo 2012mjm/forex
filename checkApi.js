@@ -14,8 +14,9 @@ const connection = mysql.createConnection({
 connection.connect();
 
 app.get("/candlestick/:date", (req, res) => {
+  console.log(req.params.date);
   connection.query(
-    `SELECT * FROM quotes WHERE symbol = 'EURUSD' AND date <= ${req.params.date} ORDER BY id DESC LIMIT 10`,
+    `SELECT * FROM quotes WHERE symbol = 'EURUSD' AND date <= '${req.params.date}' ORDER BY id DESC LIMIT 10`,
     (error, results, fields) => {
       results = results.reverse();
       const sec15 = filter(results);
