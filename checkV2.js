@@ -49,7 +49,7 @@ setInterval(() => {
             console.log(
               item,
               "Is Abandoned Baby",
-              ta.abandonedbaby.calculate({
+              ta.abandonedbaby({
                 open: sec15.open[item].slice(-3),
                 high: sec15.high[item].slice(-3),
                 close: sec15.close[item].slice(-3),
