@@ -1,39 +1,24 @@
+const config = require("./config");
+
 const ta = require("technicalindicators");
 const request = require("request");
 const tgBot = require("node-telegram-bot-api");
 
 const mysql = require("mysql");
 const connection = mysql.createConnection({
-  host: "localhost",
-  user: "mjm3d_forex",
-  password: "uz99fa@S,muQ",
-  database: "mjm3d_forex"
-  //port: '3388'
+  host: config.database_host,
+  user: config.database_username,
+  password: config.database_password,
+  database: config.database_name
+  // port: config.database_port
 });
 connection.connect();
 
-const tg = new tgBot("745759458:AAHtUX6YTX7yxmOIdD_HtSDq7z7IPhL2sh4", {
+const tg = new tgBot(config.telegram_bot_api, {
   polling: true
 });
 
-let period = 8;
-const chatIds = ["114463063", "614887041"];
-const QUOTE = [
-  "EURUSD",
-  "GBPUSD",
-  "EURCHF",
-  "EURGBP",
-  "EURNZD",
-  "AUDJPY",
-  "GBPAUD",
-  "GBPCAD",
-  "GBPNZD",
-  "NZDUSD",
-  "EURJPY",
-  "USDJPY",
-  "USDCHF",
-  "GBPJPY"
-];
+// config.telegram_chat_ids
 
 setInterval(() => {
   connection.query(
@@ -41,6 +26,8 @@ setInterval(() => {
     (error, results, fields) => {
       results = results.reverse();
       const sec15 = filter(results);
+
+      console.log("type", sec15.type);
 
       connection.query(
         "SELECT COALESCE(`id`) id, symbol, COALESCE(`date`) `date`, \
@@ -52,7 +39,7 @@ setInterval(() => {
           results = results.reverse();
           const min1 = filter(results);
 
-          QUOTE.forEach(item => {
+          config.quote_symbols.forEach(item => {
             let rsi15sec = ta.RSI.calculate({
               period: 14,
               values: sec15.close[item]
@@ -73,18 +60,22 @@ setInterval(() => {
 }, 15000);
 
 const filter = results => {
-  let values = { open: [], close: [], high: [], low: [] };
-  QUOTE.forEach(item => {
+  let values = { open: [], close: [], high: [], low: [], type: [] };
+  config.quote_symbols.forEach(item => {
     values.open[item] = [];
     values.close[item] = [];
     values.high[item] = [];
     values.low[item] = [];
+    values.type[item] = [];
   });
   results.forEach(result => {
     values.open[result.symbol].push(result.open);
     values.close[result.symbol].push(result.close);
     values.high[result.symbol].push(result.max);
     values.low[result.symbol].push(result.min);
+    values.type[result.symbol].push(
+      result.open > result.close ? "sell" : "buy"
+    );
   });
   return values;
 };
