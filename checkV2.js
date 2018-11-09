@@ -44,7 +44,7 @@ setInterval(() => {
             //   console.log(`${item} -> best sell`);
             // }
 
-            console.log(item, candleStickPattern(min1, item))
+            console.log(item, candleStickPattern(min1, item));
             console.log("\n");
 
             // let rsi15sec = ta.RSI.calculate({
@@ -159,6 +159,12 @@ const candleStickPattern = (values, symbol) => {
     close: values.close[symbol].slice(-3),
     low: values.low[symbol].slice(-3)
   };
+  const val5 = {
+    open: values.open[symbol].slice(-5),
+    high: values.high[symbol].slice(-5),
+    close: values.close[symbol].slice(-5),
+    low: values.low[symbol].slice(-5)
+  };
 
   if (ta.abandonedbaby(val3)) {
     result.push("Abandoned Baby");
@@ -172,7 +178,7 @@ const candleStickPattern = (values, symbol) => {
   if (ta.darkcloudcover(val2)) {
     result.push("Dark Cloud Cover");
   }
-  if (ta.downsidetasukigap(val2)) {
+  if (ta.downsidetasukigap(val3)) {
     result.push("Downside Tasuki Gap");
   }
   if (ta.doji(val1)) {
@@ -210,6 +216,60 @@ const candleStickPattern = (values, symbol) => {
   }
   if (ta.piercingline(val2)) {
     result.push("Piercing Line");
+  }
+  if (ta.bullishspinningtop(val1)) {
+    result.push("Bullish Spinning Top");
+  }
+  if (ta.bearishspinningtop(val1)) {
+    result.push("Bearish Spinning Top");
+  }
+  if (ta.morningdojistar(val3)) {
+    result.push("Morning Doji Star");
+  }
+  if (ta.morningstar(val3)) {
+    result.push("Morning Star");
+  }
+  if (ta.threeblackcrows(val3)) {
+    result.push("Three Black Crows");
+  }
+  if (ta.threewhitesoldiers(val3)) {
+    result.push("Three White Soldiers");
+  }
+  if (ta.bullishhammer(val1)) {
+    result.push("Bullish Hammer");
+  }
+  if (ta.bearishhammer(val1)) {
+    result.push("Bearish Hammer");
+  }
+  if (ta.bullishinvertedhammer(val1)) {
+    result.push("Bullish Inverted Hammer");
+  }
+  if (ta.bearishinvertedhammer(val1)) {
+    result.push("Bearish Inverted Hammer");
+  }
+  if (ta.hammerpattern(val5)) {
+    result.push("Hammer");
+  }
+  if (ta.hammerpatternunconfirmed(val5)) {
+    result.push("Hammer (Unconfirmed)");
+  }
+  if (ta.hangingman(val5)) {
+    result.push("Hanging Man");
+  }
+  if (ta.hangingmanunconfirmed(val5)) {
+    result.push("Hanging Man (Unconfirmed)");
+  }
+  if (ta.shootingstar(val5)) {
+    result.push("Shooting Star");
+  }
+  if (ta.shootingstarunconfirmed(val5)) {
+    result.push("Shooting Star (Unconfirmed)");
+  }
+  if (ta.tweezertop(val5)) {
+    result.push("Tweezer Top");
+  }
+  if (ta.tweezerbottom(val5)) {
+    result.push("Tweezer Bottom");
   }
 
   return result;
