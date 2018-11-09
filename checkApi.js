@@ -3,6 +3,8 @@ const config = require("./config");
 const express = require("express");
 const app = express();
 
+const ta = require("technicalindicators");
+
 const mysql = require("mysql");
 const connection = mysql.createConnection({
   host: config.database_host,
