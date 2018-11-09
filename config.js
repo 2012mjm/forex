@@ -9,7 +9,7 @@ module.exports = {
 
   telegram_chat_ids: ["114463063", "614887041"],
 
-  quote_symbols = [
+  quote_symbols: [
     "EURUSD",
     "GBPUSD",
     "EURCHF",
