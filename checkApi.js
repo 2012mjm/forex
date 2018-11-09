@@ -2,9 +2,6 @@ const config = require("./config");
 
 const express = require("express");
 const app = express();
-app.listen(3124, () => {
-  console.log("Server running on port 3124");
-});
 
 const mysql = require("mysql");
 const connection = mysql.createConnection({
@@ -26,6 +23,10 @@ app.get("/candlestick/:date", (req, res) => {
       res.json(candleStickPattern(sec15, "EURUSD"));
     }
   );
+});
+
+app.listen(3000, () => {
+  console.log("Server running on port 3000");
 });
 
 const filter = results => {
