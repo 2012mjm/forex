@@ -12,10 +12,12 @@ const connection = mysql.createConnection({
 });
 connection.connect();
 
-const tg = new tgBot("745759458:AAHtUX6YTX7yxmOIdD_HtSDq7z7IPhL2sh4", {polling: true});
+const tg = new tgBot("745759458:AAHtUX6YTX7yxmOIdD_HtSDq7z7IPhL2sh4", {
+  polling: true
+});
 
 let period = 8;
-const chatIds = ["114463063","614887041"];
+const chatIds = ["114463063", "614887041"];
 
 setInterval(() => {
   connection.query(
@@ -118,7 +120,7 @@ setInterval(() => {
         message += `پارابولیک: ${psar5min.status}\n`;
 
         chatIds.forEach(chatId => {
-	  tg.sendMessage(chatId, message)
+          tg.sendMessage(chatId, message);
         });
       }
 

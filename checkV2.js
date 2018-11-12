@@ -18,64 +18,113 @@ const tg = new tgBot(config.telegram_bot_api, {
   polling: true
 });
 
-// config.telegram_chat_ids
-
-setInterval(() => {
+const main = () => {
   connection.query(
-    "SELECT * FROM `quotes` ORDER BY id DESC LIMIT 350",
+    "SELECT * FROM `quotes` ORDER BY id DESC LIMIT 7500",
     (error, results, fields) => {
       results = results.reverse();
-      const sec15 = filter(results);
 
-      connection.query(
-        "SELECT COALESCE(`id`) id, symbol, COALESCE(`date`) `date`, \
-        MIN(`min`) as `min`, MAX(`max`) as `max`, COALESCE(`open`) as `open`, SUBSTRING_INDEX(GROUP_CONCAT(`close`), ',', -1) as `close` \
-        FROM (SELECT * FROM `quotes` ORDER BY id DESC LIMIT 1500) as t \
-        GROUP BY symbol, DATE_FORMAT(`date`, '%Y-%m-%d %H:%i') \
-        ORDER BY symbol, id DESC",
-        (error, results, fields) => {
-          results = results.reverse();
-          const min1 = filter(results);
+      /** ************* filter ************* */
+      const sec15 = fifteenSeconds(results);
+      const min1 = filterMinutes(results, 4);
+      const min5 = filterMinutes(results, 20);
 
-          item = "EURUSD";
-          // config.quote_symbols.forEach(item => {
-            // if (countIf(sec15.type[item], "buy") >= 15) {
-            //   console.log(`${item} -> best buy`);
-            // } else if (countIf(sec15.type[item], "sell") >= 15) {
-            //   console.log(`${item} -> best sell`);
-            // }
+      config.quote_symbols.forEach(symbol => {
+        /** ************* RSI ************* */
+        let rsi15sec = ta.RSI.calculate({
+          period: 14,
+          values: sec15.close[symbol]
+        });
+        let rsi1min = ta.RSI.calculate({
+          period: 14,
+          values: min1.close[symbol]
+        });
+        let rsi5min = ta.RSI.calculate({
+          period: 14,
+          values: min5.close[symbol]
+        });
 
-            console.log(item, candleStickPattern(min1, item));
-            console.log(item, candleStickPattern(sec15, item));
-            console.log("\n");
+        /** ************* Bollinger Bands ************* */
+        let bb15sec = bollingerBands(sec15.close[symbol]);
+        let bb1min = bollingerBands(min1.close[symbol]);
+        let bb5min = bollingerBands(min5.close[symbol]);
 
-            // let rsi15sec = ta.RSI.calculate({
-            //   period: 14,
-            //   values: sec15.close[item]
-            // });
-            // let rsi1min = ta.RSI.calculate({
-            //   period: 14,
-            //   values: min1.close[item]
-            // });
-            // console.log(`${item} -> RSI 15 sec:`, rsi15sec.slice(-1)[0]);
-            // console.log(`${item} -> RSI 1 min:`, rsi1min.slice(-1)[0]);
-          // });
+        /** ************* Parabolic SAR ************* */
+        let psar15sec = parabolicSAR(sec15.low[symbol], sec15.high[symbol]);
+        let psar1min = parabolicSAR(min1.low[symbol], min1.high[symbol]);
+        let psar5min = parabolicSAR(min5.low[symbol], min5.high[symbol]);
+
+        /** ************* MACD ************* */
+        // const macdParams = {
+        //   fastPeriod: 12,
+        //   slowPeriod: 26,
+        //   signalPeriod: 9,
+        //   SimpleMAOscillator: false,
+        //   SimpleMASignal: false
+        // };
+        // let macd15sec = ta.MACD.calculate({
+        //   ...macdParams,
+        //   values: sec15.close[symbol]
+        // });
+        // let macd1min = ta.MACD.calculate({
+        //   ...macdParams,
+        //   values: min1.close[symbol]
+        // });
+        // let macd5min = ta.MACD.calculate({
+        //   ...macdParams,
+        //   values: min5.close[symbol]
+        // });
+
+        /** ************* IF ************* */
+        if (
+          (rsi15sec.slice(-1)[0] < 30 &&
+            rsi1min.slice(-1)[0] < 30 &&
+            rsi5min.slice(-1)[0] < 30) ||
+          (rsi15sec.slice(-1)[0] > 70 &&
+            rsi1min.slice(-1)[0] > 70 &&
+            rsi5min.slice(-1)[0] > 70)
+        ) {
+          let message = `${symbol}\n\n`;
+
+          if (rsi15sec.slice(-1)[0] < 30) {
+            message += "مقدار RSI زیر ۳۰\n\n";
+          } else {
+            message += "مقدار RSI بالای ۷۰\n\n";
+          }
+
+          message += `15 SEC\n`;
+          message += `آر اس آی: ${rsi15sec.slice(-1)[0]}\n`;
+          message += `باند بولینگر: ${bb15sec.status}\n`;
+          message += `پارابولیک: ${psar15sec.status}\n\n`;
+          message += `1 MIN\n`;
+          message += `آر اس آی: ${rsi1min.slice(-1)[0]}\n`;
+          message += `باند بولینگر: ${bb1min.status}\n`;
+          message += `پارابولیک: ${psar1min.status}\n\n`;
+          message += `5 MIN\n`;
+          message += `آر اس آی: ${rsi5min.slice(-1)[0]}\n`;
+          message += `باند بولینگر: ${bb5min.status}\n`;
+          message += `پارابولیک: ${psar5min.status}\n`;
+
+          /** ************* SEND TO TELEGRAM ************* */
+          config.telegram_chat_ids.forEach(chatId => {
+            tg.sendMessage(chatId, message);
+          });
         }
-      );
-
-      console.log("\n\n");
+      });
     }
   );
-}, 15000);
+};
+main();
+setInterval(main, 15000);
 
-const filter = results => {
+const fifteenSeconds = results => {
   let values = { open: [], close: [], high: [], low: [], type: [] };
-  config.quote_symbols.forEach(item => {
-    values.open[item] = [];
-    values.close[item] = [];
-    values.high[item] = [];
-    values.low[item] = [];
-    values.type[item] = [];
+  config.quote_symbols.forEach(symbol => {
+    values.open[symbol] = [];
+    values.close[symbol] = [];
+    values.high[symbol] = [];
+    values.low[symbol] = [];
+    values.type[symbol] = [];
   });
   results.forEach(result => {
     values.open[result.symbol].push(result.open);
@@ -85,6 +134,51 @@ const filter = results => {
     values.type[result.symbol].push(
       result.open > result.close ? "sell" : "buy"
     );
+  });
+  return values;
+};
+
+const filterMinutes = (results, sliceCount = 4) => {
+  let i = 0;
+  let min = [];
+  let max = [];
+  let list = [];
+  let values = { open: [], close: [], high: [], low: [], type: [] };
+
+  config.quote_symbols.forEach(symbol => {
+    list[symbol] = [];
+    values.open[symbol] = [];
+    values.close[symbol] = [];
+    values.high[symbol] = [];
+    values.low[symbol] = [];
+    values.type[symbol] = [];
+  });
+
+  results.forEach(result => {
+    list[result.symbol].push(result);
+  });
+
+  config.quote_symbols.forEach(symbol => {
+    list[symbol].forEach(item => {
+      if (i % sliceCount == 0) {
+        values.open[symbol].push(item.open);
+        min = [];
+        max = [];
+        min.push(item.min);
+        max.push(item.max);
+      } else if ((i + 1) % sliceCount == 0) {
+        values.close[symbol].push(item.close);
+        min.push(item.min);
+        max.push(item.max);
+        values.high[symbol].push(Math.min(...min));
+        values.low[symbol].push(Math.max(...max));
+        values.type[symbol].push(item.open > item.close ? "sell" : "buy");
+      } else {
+        min.push(item.min);
+        max.push(item.max);
+      }
+      i++;
+    });
   });
   return values;
 };
@@ -101,13 +195,13 @@ const bollingerBands = values => {
   const newClose = values.slice(-1)[0];
 
   if (newClose >= result.upper) {
-    result.status = "upper";
+    result.status = "خیلی بالا";
   } else if (newClose <= result.lower) {
-    result.status = "lower";
+    result.status = "خیلی پایین";
   } else if (newClose > result.middle) {
-    result.status = "top middle";
+    result.status = "وسط به بالا";
   } else if (newClose < result.middle) {
-    result.status = "down middle";
+    result.status = "وسط به پایین";
   } else {
     result.status = null;
   }
@@ -128,177 +222,11 @@ const parabolicSAR = (low, high) => {
   const newHigh = high.slice(-1)[0];
 
   if (newLow > result || newHigh > result) {
-    result = { value: result, status: "down" };
+    result = { value: result, status: "زیرش" };
   } else if (newLow < result || newHigh < result) {
-    result = { value: result, status: "top" };
+    result = { value: result, status: "روش" };
   } else {
     result = { value: result, status: null };
   }
   return result;
-};
-
-const countIf = (array, value) => {
-  return array.filter(x => x == value).length;
-};
-
-const candleStickPattern = (values, symbol) => {
-  let result = [];
-  let bullish = (bearish = 0);
-  const val1 = {
-    open: values.open[symbol].slice(-1),
-    high: values.high[symbol].slice(-1),
-    close: values.close[symbol].slice(-1),
-    low: values.low[symbol].slice(-1)
-  };
-  const val2 = {
-    open: values.open[symbol].slice(-2),
-    high: values.high[symbol].slice(-2),
-    close: values.close[symbol].slice(-2),
-    low: values.low[symbol].slice(-2)
-  };
-  const val3 = {
-    open: values.open[symbol].slice(-3),
-    high: values.high[symbol].slice(-3),
-    close: values.close[symbol].slice(-3),
-    low: values.low[symbol].slice(-3)
-  };
-  const val5 = {
-    open: values.open[symbol].slice(-5),
-    high: values.high[symbol].slice(-5),
-    close: values.close[symbol].slice(-5),
-    low: values.low[symbol].slice(-5)
-  };
-
-  if (ta.abandonedbaby(val3)) {
-    result.push("Abandoned Baby");
-  }
-  if (ta.bearishengulfingpattern(val2)) {
-    result.push("Bearish Engulfing");
-    bearish++;
-  }
-  if (ta.bullishengulfingpattern(val2)) {
-    result.push("Bullish Engulfing");
-    bullish++;
-  }
-  if (ta.darkcloudcover(val2)) {
-    result.push("Dark Cloud Cover");
-    bearish++;
-  }
-  if (ta.downsidetasukigap(val3)) {
-    result.push("Downside Tasuki Gap");
-    bearish++;
-  }
-  if (ta.doji(val1)) {
-    result.push("Doji");
-  }
-  if (ta.dragonflydoji(val1)) {
-    result.push("Dragonfly Doji");
-    bullish++;
-  }
-  if (ta.gravestonedoji(val1)) {
-    result.push("Gravestone Doji");
-    bearish++;
-  }
-  if (ta.bullishharami(val2)) {
-    result.push("Bullish Harami");
-    bullish++;
-  }
-  if (ta.bearishharami(val2)) {
-    result.push("Bearish Harami");
-    bearish++;
-  }
-  if (ta.bullishharamicross(val2)) {
-    result.push("Bullish Harami Cross");
-    bullish++;
-  }
-  if (ta.bearishharamicross(val2)) {
-    result.push("Bearish Harami Cross");
-    bearish++;
-  }
-  if (ta.bullishmarubozu(val1)) {
-    result.push("Bullish Marubozu");
-    bullish++;
-  }
-  if (ta.bearishmarubozu(val1)) {
-    result.push("Bearish Marubozu");
-    bearish++;
-  }
-  if (ta.eveningdojistar(val3)) {
-    result.push("Evening Doji Star");
-    bearish++;
-  }
-  if (ta.eveningstar(val3)) {
-    result.push("Evening Star");
-    bearish++;
-  }
-  if (ta.piercingline(val2)) {
-    result.push("Piercing Line");
-  }
-  if (ta.bullishspinningtop(val1)) {
-    result.push("Bullish Spinning Top");
-    bullish++;
-  }
-  if (ta.bearishspinningtop(val1)) {
-    result.push("Bearish Spinning Top");
-    bearish++;
-  }
-  if (ta.morningdojistar(val3)) {
-    result.push("Morning Doji Star");
-    bullish++;
-  }
-  if (ta.morningstar(val3)) {
-    result.push("Morning Star");
-    bullish++;
-  }
-  if (ta.threeblackcrows(val3)) {
-    result.push("Three Black Crows");
-    bearish++;
-  }
-  if (ta.threewhitesoldiers(val3)) {
-    result.push("Three White Soldiers");
-    bullish++;
-  }
-  // if (ta.bullishhammer(val1)) {
-  //   result.push("Bullish Hammer");
-  // }
-  // if (ta.bearishhammer(val1)) {
-  //   result.push("Bearish Hammer");
-  // }
-  // if (ta.bullishinvertedhammer(val1)) {
-  //   result.push("Bullish Inverted Hammer");
-  // }
-  // if (ta.bearishinvertedhammer(val1)) {
-  //   result.push("Bearish Inverted Hammer");
-  // }
-  if (ta.hammerpattern(val5)) {
-    result.push("Hammer");
-    bullish++;
-  }
-  if (ta.hammerpatternunconfirmed(val5)) {
-    result.push("Hammer (Unconfirmed)");
-  }
-  if (ta.hangingman(val5)) {
-    result.push("Hanging Man");
-    bearish++;
-  }
-  if (ta.hangingmanunconfirmed(val5)) {
-    result.push("Hanging Man (Unconfirmed)");
-  }
-  if (ta.shootingstar(val5)) {
-    result.push("Shooting Star");
-    bearish++;
-  }
-  if (ta.shootingstarunconfirmed(val5)) {
-    result.push("Shooting Star (Unconfirmed)");
-  }
-  if (ta.tweezertop(val5)) {
-    result.push("Tweezer Top");
-    bearish++;
-  }
-  if (ta.tweezerbottom(val5)) {
-    result.push("Tweezer Bottom");
-    bullish++;
-  }
-
-  return { result, bullish, bearish };
 };
