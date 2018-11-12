@@ -84,7 +84,7 @@ const main = () => {
             rsi1min.slice(-1)[0] > 70 &&
             rsi5min.slice(-1)[0] > 70)
         ) {
-          let message = `${symbol}\n\n`;
+          let message = `${config.symbols_flag[symbol]} ${symbol}\n`;
 
           if (rsi15sec.slice(-1)[0] < 30) {
             message += "مقدار RSI زیر ۳۰\n\n";

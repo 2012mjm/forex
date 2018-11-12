@@ -24,5 +24,22 @@ module.exports = {
     "USDJPY",
     "USDCHF",
     "GBPJPY"
-  ]
+  ],
+
+  symbols_flag: {
+    EURUSD: "🇪🇺🇺🇸",
+    GBPUSD: "🇬🇧🇺🇸",
+    EURCHF: "🇪🇺🇨🇭",
+    EURGBP: "🇪🇺🇬🇧",
+    EURNZD: "🇪🇺🇳🇿",
+    AUDJPY: "🇦🇺🇯🇵",
+    GBPAUD: "🇬🇧🇦🇺",
+    GBPCAD: "🇬🇧🇨🇦",
+    GBPNZD: "🇬🇧🇳🇿",
+    NZDUSD: "🇳🇿🇺🇸",
+    EURJPY: "🇪🇺🇯🇵",
+    USDJPY: "🇺🇸🇯🇵",
+    USDCHF: "🇺🇸🇨🇭",
+    GBPJPY: "🇬🇧🇯🇵"
+  }
 };
