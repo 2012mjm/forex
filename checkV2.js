@@ -87,9 +87,9 @@ const main = () => {
           let message = `${config.symbols_flag[symbol]} ${symbol}\n`;
 
           if (rsi15sec.slice(-1)[0] < 30) {
-            message += "مقدار RSI زیر ۳۰\n\n";
+            message += "🔻 مقدار RSI زیر ۳۰\n\n";
           } else {
-            message += "مقدار RSI بالای ۷۰\n\n";
+            message += "🔺 مقدار RSI بالای ۷۰\n\n";
           }
 
           message += `15 SEC\n`;
