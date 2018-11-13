@@ -22,8 +22,8 @@ setInterval(() => {
       const sec15 = filter(results);
 
 
-      let time = (Date.parse(sec15.date['EURUSD'].slice(-1)[0]) / 1000 + 12600) * 1000;
-      console.log(sec15.close['EURUSD'].slice(-1)[0], new Date(time));
+      // let time = (Date.parse(sec15.date['EURUSD'].slice(-1)[0]) / 1000 + 12600) * 1000;
+      console.log(sec15.open['EURUSD'].slice(-1)[0], sec15.close['EURUSD'].slice(-1)[0]);
 
       console.log(candleStickPattern(sec15, 'EURUSD'));
       console.log("\n");
