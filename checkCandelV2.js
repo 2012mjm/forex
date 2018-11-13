@@ -17,11 +17,13 @@ setInterval(() => {
   connection.query(
     "SELECT * FROM `quotes` ORDER BY id DESC LIMIT 260",
     (error, results, fields) => {
-      let time = (Date.parse(results[0].date) / 1000 + 12600) * 1000;
-      console.log(results[0], new Date(time));
 
       results = results.reverse();
       const sec15 = filter(results);
+
+
+      let time = (Date.parse(sec15.date['EURUSD'].slice(-1)[0]) / 1000 + 12600) * 1000;
+      console.log(sec15.close['EURUSD'].slice(-1)[0], new Date(time));
 
       console.log(candleStickPattern(sec15, 'EURUSD'));
       console.log("\n");
@@ -30,19 +32,21 @@ setInterval(() => {
 }, 15000);
 
 const filter = results => {
-  let values = { open: [], close: [], high: [], low: [], type: [] };
+  let values = { open: [], close: [], high: [], low: [], type: [], date: [] };
   config.quote_symbols.forEach(item => {
     values.open[item] = [];
     values.close[item] = [];
     values.high[item] = [];
     values.low[item] = [];
     values.type[item] = [];
+    values.date[item] = [];
   });
   results.forEach(result => {
     values.open[result.symbol].push(result.open);
     values.close[result.symbol].push(result.close);
     values.high[result.symbol].push(result.max);
     values.low[result.symbol].push(result.min);
+    values.date[result.symbol].push(result.date);
     values.type[result.symbol].push(
       result.open > result.close ? "sell" : "buy"
     );
