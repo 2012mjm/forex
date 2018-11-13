@@ -7,7 +7,7 @@ module.exports = {
   database_host: "localhost",
   database_port: "3388",
 
-  telegram_chat_ids: ["114463063", "614887041"],
+  telegram_chat_ids: ["114463063", "662897675", "76100376"],
 
   quote_symbols: [
     "EURUSD",
