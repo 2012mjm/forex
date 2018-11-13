@@ -109,9 +109,11 @@ const main = () => {
       });
 
       /** ************* SEND TO TELEGRAM ************* */
-      config.telegram_chat_ids.forEach(chatId => {
-        tg.sendMessage(chatId, message);
-      });
+      if (message !== "") {
+        config.telegram_chat_ids.forEach(chatId => {
+          tg.sendMessage(chatId, message);
+        });
+      }
     }
   );
 };
