@@ -15,7 +15,7 @@ connection.connect();
 
 setInterval(() => {
   connection.query(
-    "SELECT * FROM `quotes` ORDER BY id DESC LIMIT 30",
+    "SELECT * FROM `quotes` ORDER BY id DESC LIMIT 260",
     (error, results, fields) => {
       let time = (Date.parse(results[0].date) / 1000 + 12600) * 1000;
       console.log(results[0], new Date(time));
@@ -23,9 +23,7 @@ setInterval(() => {
       results = results.reverse();
       const sec15 = filter(results);
 
-      item = "EURUSD";
-
-      console.log(item, candleStickPattern(sec15, item));
+      console.log(candleStickPattern(sec15, 'EURUSD'));
       console.log("\n");
     }
   );
