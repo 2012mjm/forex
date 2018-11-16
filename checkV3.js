@@ -88,8 +88,8 @@ const main = () => {
             rsi1min.slice(-1)[0] > 70 &&
             rsi5min.slice(-1)[0] > 70)
         ) {
-          message += `⌚️ ${sec15.date[symbol].slice(-1)[0]}\n`
           message += `${config.symbols_flag[symbol]} ${symbol}\n`;
+          message += `⌚️ ${new Date(`${sec15.date[symbol].slice(-1)[0]} UTC`).toLocaleString("en-US", {timeZone: "Asia/Tehran"})}\n`
 
           if (rsi15sec.slice(-1)[0] < 30) {
             message += "🔻 مقدار RSI زیر ۳۰\n\n";
