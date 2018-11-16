@@ -198,7 +198,7 @@ Date.prototype.toMysqlFormat = function() {
     return this.getUTCFullYear() + "-" + twoDigits(1 + this.getUTCMonth()) + "-" + twoDigits(this.getUTCDate()) + " " + twoDigits(this.getUTCHours()) + ":" + twoDigits(this.getUTCMinutes()) + ":" + twoDigits(this.getUTCSeconds());
 };
 
-dateTimeZone = offset => {
+const dateTimeZone = offset => {
 	d = new Date();
 	utc = d.getTime() + d.getTimezoneOffset() * 60000;
 	return new Date(utc + 3600000 * offset);
