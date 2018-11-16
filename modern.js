@@ -1,4 +1,6 @@
 // config
+const config = require("./config");
+
 const API = [
 	'OWQtfh3LZ4VVxS2A5T8Tx1szdi7MvAjK', //jgm93598@awsoo.com
 	'wSGMlAeBZ2FAbUzC8bVcASdCfODxZGtQ', //lux39924@nbzmr.com
@@ -96,21 +98,19 @@ const API = [
 	'EbF2ps0IiRW8eTpbBaVMa9Wibin9v2oj',
 	'zZ8prhn1PLk4tLss60PF63lxb8QBFrva'
 ];
-const QUOTE = ['EURUSD','GBPUSD','EURCHF','EURGBP','EURNZD','AUDJPY','GBPAUD','GBPCAD','GBPNZD','NZDUSD','EURJPY','USDJPY','USDCHF','GBPJPY'];
-const DB = {
-	host     : 'localhost',
-	user     : 'mjm3d_forex',
-	password : 'uz99fa@S,muQ',
-	database : 'mjm3d_forex',
-	//port: '3388'
-}
 
 // require
 const mysql = require('mysql');
 const ForexDataClient = require("forex-quotes");
 
 // db connect
-const connection = mysql.createConnection(DB);
+const connection = mysql.createConnection({
+	host: config.database_host,
+	user: config.database_username,
+	password: config.database_password,
+	database: config.database_name
+	// port: config.database_port
+});
 connection.connect();
 
 // client connect
@@ -118,13 +118,16 @@ let currentApiIndex = 0;
 let client = new ForexDataClient(API[currentApiIndex]);
 
 setInterval(() => {
-	client.getQuotes(QUOTE).then(response => {
+	let date = dateTimeZone('+3.5'); // Asia/Tehran
+	if (date.getDay() === 0 || date.getDay() === 6) return undefined;
+
+	client.getQuotes(config.quote_symbols).then(response => {
 		
 		if(response.error !== undefined && response.error) {
 			currentApiIndex = (currentApiIndex+1 > API.length-1) ? 0 : currentApiIndex+1;
 			client = new ForexDataClient(API[currentApiIndex]);
 			
-			client.getQuotes(QUOTE).then(response => {
+			client.getQuotes(config.quote_symbols).then(response => {
 			    cal(response);
 			})
 		}
@@ -141,7 +144,7 @@ let close = [];
 let max = [];
 let min = [];
 let openTime = [];
-QUOTE.forEach(item => {
+config.quote_symbols.forEach(item => {
     prices[item] = [];
     open[item] = null;
     close[item] = null;
@@ -194,5 +197,11 @@ function twoDigits(d) {
 Date.prototype.toMysqlFormat = function() {
     return this.getUTCFullYear() + "-" + twoDigits(1 + this.getUTCMonth()) + "-" + twoDigits(this.getUTCDate()) + " " + twoDigits(this.getUTCHours()) + ":" + twoDigits(this.getUTCMinutes()) + ":" + twoDigits(this.getUTCSeconds());
 };
+
+dateTimeZone = offset => {
+	d = new Date();
+	utc = d.getTime() + d.getTimezoneOffset() * 60000;
+	return new Date(utc + 3600000 * offset);
+  };
 
 //connection.end();

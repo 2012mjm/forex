@@ -19,6 +19,9 @@ const tg = new tgBot(config.telegram_bot_api, {
 });
 
 const main = () => {
+  let date = dateTimeZone('+3.5'); // Asia/Tehran
+  if (date.getDay() === 0 || date.getDay() === 6) return undefined;
+
   connection.query(
     "SELECT * FROM `quotes` ORDER BY id DESC LIMIT 7500",
     (error, results, fields) => {
@@ -85,6 +88,7 @@ const main = () => {
             rsi1min.slice(-1)[0] > 70 &&
             rsi5min.slice(-1)[0] > 70)
         ) {
+          message += `⌚️ ${sec15.date[symbol].slice(-1)[0]}\n`
           message += `${config.symbols_flag[symbol]} ${symbol}\n`;
 
           if (rsi15sec.slice(-1)[0] < 30) {
@@ -121,19 +125,21 @@ main();
 setInterval(main, 15000);
 
 const fifteenSeconds = results => {
-  let values = { open: [], close: [], high: [], low: [], type: [] };
+  let values = { open: [], close: [], high: [], low: [], type: [], date: [] };
   config.quote_symbols.forEach(symbol => {
     values.open[symbol] = [];
     values.close[symbol] = [];
     values.high[symbol] = [];
     values.low[symbol] = [];
     values.type[symbol] = [];
+    values.date[symbol] = [];
   });
   results.forEach(result => {
     values.open[result.symbol].push(result.open);
     values.close[result.symbol].push(result.close);
     values.high[result.symbol].push(result.max);
     values.low[result.symbol].push(result.min);
+    values.date[result.symbol].push(result.date);
     values.type[result.symbol].push(
       result.open > result.close ? "sell" : "buy"
     );
@@ -232,4 +238,10 @@ const parabolicSAR = (low, high) => {
     result = { value: result, status: null };
   }
   return result;
+};
+
+dateTimeZone = offset => {
+  d = new Date();
+  utc = d.getTime() + d.getTimezoneOffset() * 60000;
+  return new Date(utc + 3600000 * offset);
 };
